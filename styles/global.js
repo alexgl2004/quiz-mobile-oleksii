@@ -28,7 +28,8 @@ export const globalStyles = StyleSheet.create({
     fontFamily: FONTS.sansSerif,
     width:"100%",
     textAlign:"justify",
-    marginBottom:15
+    marginBottom:15,
+    paddingHorizontal:10
   },
   pCenter: {
     fontSize: 14,
@@ -132,6 +133,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 10,
     padding:18,
     backgroundColor: COLORS.accent,
+    marginTop:40
   },
   buttonSend:{
     alignSelf:"center",

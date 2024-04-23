@@ -10,32 +10,28 @@ export default function HomePage() {
 
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
-  const [promo, setPromo] = useState('none');
-  const [boolOutForPromo, setOutForPromo] = useState(false);
+  const [room, setRoom] = useState('none');
+  const [boolOutForRoom, setOutForRoom] = useState(false);
 
-  const { user, setUserPromo, delUserPromo } = useContext(UserContext);
-  const header_var = (<Typography variant="heading">Promo code</Typography>);
+  const { user, setUserRoom, delUserRoom, loginQR } = useContext(UserContext);
+  const header_var = (<Typography variant="heading">Room code</Typography>);
 
   useEffect(() => {
     if(user!=null){
-      if(user.promoactive==true){
-        setOutForPromo(true)
+      if(user.roomactive==true){
+        setOutForRoom(true)
       }else{
-        setOutForPromo(false)
+        setOutForRoom(false)
       }
-      setPromo('none')
+      setRoom('none')
     }else{
-      setOutForPromo(false)
-      setPromo('none')
+      setOutForRoom(false)
+      setRoom('none')
     }
   },[user]);
 
-  if (!permission){
-    //alert('Permisson problem');
-    return <></>;
-  }
+  if( ( (permission && !permission.granted) || !permission) && user==null ){
 
-  if ( (permission && !permission.granted) || !permission){
     return (
       <View style={globalStyles.container}>
         <Text>Camera permission is required</Text>
@@ -44,93 +40,72 @@ export default function HomePage() {
         </Pressable>        
       </View>
     );
+
   }
+
+  if (!permission && user==null){
+    alert('Permisson problem');
+    console.log('Permisson problem');
+    return <></>;
+  }
+  
 
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
-  function handlePromoCode(data){
+  function handleRoomCode(data){
     if(data.data){
-      setPromo(data.data);
+      loginQR(data.data);
+//      setRoom(data.data);
     }    
   }
 
-  function sendPromo(promo){
-    setUserPromo(promo)
-  }
-
-  if(user==null){
+  if(user==null && room=='none'){
     return (
-      <ScrollView style={globalStyles.container}>
-          {header_var}
-          <LoginText />
-      </ScrollView>
+      <>
+        <ScrollView style={globalStyles.container}>
+
+            {header_var}
+
+            <LoginText />
+
+            <Pressable onPress={()=>setRoom('')} style={globalStyles.buttonScan}>
+              <Text style={globalStyles.buttonText}>Scan QR</Text>
+            </Pressable>
+
+          </ScrollView>
+      </>
     )
 
-  }else if(promo=='none'){
+  }else if(user!=null && room!=''){
 
-    return (
-      <View style={globalStyles.container}>
-          {header_var}
-          {
-            boolOutForPromo===true?(
-            <Text style={globalStyles.p}>
-                You have applied promo code. If You want have another promo code, You can:
-            </Text>):''
-          }
-          <Pressable onPress={()=>setPromo('')} style={globalStyles.buttonScan}>
-            <Text style={globalStyles.buttonText}>Scan new</Text>
-          </Pressable>
-          {boolOutForPromo===true?(
-            <>
-              <Text style={globalStyles.p}>
-                Or:
-              </Text>
-              <Pressable onPress={()=>delUserPromo()} style={globalStyles.buttonCancel}>
-                <Text style={globalStyles.buttonText}>Remove</Text>
-              </Pressable>
-            </>):''
-          }
-
-      </View>    
-    )
-
-  }else if(promo!=''){
-
-//    console.log(promo+100)
+//    console.log(room+100)
     
     return (
         <View style={globalStyles.container}>
-          {header_var}    
-          <Pressable onPress={()=>setPromo('')} style={globalStyles.buttonScan}>
-            <Text style={globalStyles.buttonText}>Rescan</Text>
-          </Pressable>
+          {header_var}
+          <Text style={globalStyles.p}>Hello, {user.title} {user.name} {user.surname}.</Text>
+          <Text style={globalStyles.p}>You can use QR scan for jumping in another quiz</Text>
+          <Text style={globalStyles.p}>(Beetwen your accaunts too).</Text>
 
-          <Text style={globalStyles.PromoText}>
-            🎉 Congratulation 🎉
-          </Text>
-          <Text style={globalStyles.p}>You have successfully received a promo code.</Text>
-          <Text style={globalStyles.p}>
-            If you would like to apply a promotional code to purchases in our store, please click the button below:
-          </Text>
-
-          <Pressable onPress={()=>sendPromo(promo)} style={globalStyles.buttonSend}>
-            <Text style={globalStyles.buttonTextSend}>Apply</Text>
+          <Pressable onPress={()=>setRoom('')} style={globalStyles.buttonScan}>
+              <Text style={globalStyles.buttonText}>Scan QR</Text>
           </Pressable>
         </View>
       )
 
   }else{
 
-//    console.log("user", user);
+    console.log("user------------", room);
+
     return (
       <View style={globalStyles.container}>
         {header_var}
         <View style={globalStyles.cameraView}>
         <CameraView style={globalStyles.camera} facing={facing} barcodeScannerSettings={{
           barcodeTypes: ["qr"],
-        }} onBarcodeScanned={handlePromoCode}>
+        }} onBarcodeScanned={handleRoomCode}>
           <View style={globalStyles.buttonContainer}>
             <TouchableOpacity style={globalStyles.buttonFlip} onPress={toggleCameraFacing}>
               <Text style={globalStyles.textFlip}>Flip Camera</Text>
@@ -138,9 +113,6 @@ export default function HomePage() {
           </View>
         </CameraView>
         </View>
-        <Pressable onPress={()=>setPromo('none')} style={globalStyles.buttonCancel}>
-          <Text style={globalStyles.buttonText}>Cancel scan</Text>
-        </Pressable>
       </View>
     );
   }

@@ -11,7 +11,7 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);//useState({'email':'test','password':'12345','name':'test','userid':'123456785'});
   const responseData = useRef(null)
 
-  function setUserPromo(promo) {
+  function setUserRoom(room) {
 
     const options = {
       method: 'POST',
@@ -19,21 +19,21 @@ export function UserProvider({ children }) {
         "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({'actionId':promo})
+      body: JSON.stringify({'actionId':room})
     }; 
 
-    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/activatepromotion', options)
+    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/activateroomtion', options)
     .then(response => response.json())
     .then(data => { 
-      console.log('test-AKT-------------------------'+"\n", user, promo, data)
+      console.log('test-AKT-------------------------'+"\n", user, room, data)
 
       setUser(
         {
           name: user.name,
           email: user.email,
           userid: user.userid,
-          promotionCode: promo,
-          promoactive: data.promotion,
+          roomtionCode: room,
+          roomactive: data.roomtion,
         }
       );      
       
@@ -46,7 +46,7 @@ export function UserProvider({ children }) {
             name: data.name,
             email: data.email,
             userid: data.id,
-            promotion: data.promotion,
+            roomtion: data.roomtion,
           }
         );
 
@@ -61,7 +61,7 @@ export function UserProvider({ children }) {
 
   }
 
-  function delUserPromo() {
+  function delUserRoom() {
 
     const options = {
       method: 'POST',
@@ -72,7 +72,7 @@ export function UserProvider({ children }) {
       body: JSON.stringify({'actionId':"PROMO10"})
     }; 
 
-    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/deactivatepromotion', options)
+    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/deactivateroomtion', options)
     .then(response => response.json())
     .then(data => { 
       console.log('test-DEL-------------------------'+"\n", user, response, data)
@@ -82,8 +82,8 @@ export function UserProvider({ children }) {
           name: user.name,
           email: user.email,
           userid: user.userid,
-          promotionCode: '',
-          promoactive: false,
+          roomtionCode: '',
+          roomactive: false,
         }
       );            
       
@@ -126,7 +126,7 @@ export function UserProvider({ children }) {
       return response.json()
     })
     .then(data => { 
-//      console.log('test', data)
+      console.log('test', data, name, password)
       if( data.userdata.password == password && data.userdata.login == name){
         setUser(
           {
@@ -148,6 +148,49 @@ export function UserProvider({ children }) {
     .catch(error => console.error(error));
   }
 
+  function loginQR(QRlink) {
+
+        logout()
+   
+        const options = {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            QR: QRlink,
+          })
+        };
+    
+        const response = fetch('http://192.168.2.134:3000/users/login/qr', options)
+        .then(response => {
+    //      console.log(response)
+          return response.json()
+        })
+        .then(data => { 
+    //      console.log('test', data)
+          if( data.userdata.id ){
+            setUser(
+              {
+                name: data.userdata.name,
+                surname: data.userdata.surname,
+                school: data.userdata.school,
+                email: data.userdata.email,
+                userid: data.userdata.id,
+                role: data.userdata.role
+              }
+            );
+    
+            router.replace('/rooms/'+data.results_id);
+    
+          }else{
+            alert('Wrong Email or Password!')
+          }
+        })
+        .catch(error => console.error(error));
+      }  
+
   function logout() {
     setUser(null);
   }
@@ -158,8 +201,9 @@ export function UserProvider({ children }) {
         user,
         login,
         logout,
-        setUserPromo,
-        delUserPromo,
+        setUserRoom,
+        delUserRoom,
+        loginQR,
       }}
     >
       {children}

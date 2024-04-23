@@ -14,7 +14,7 @@ import { router } from "expo-router";
 
 export default function Login() {
   const { logout, login, user } = useContext(UserContext);
-  const showBackButton = router.canGoBack();
+  const showBackButton = true;
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
@@ -90,7 +90,7 @@ export default function Login() {
         title="Cancel"
         color={COLORS.grey}
         onPress={() => {
-          router.back();
+          router.replace('/');
         }}
       />
     )}     

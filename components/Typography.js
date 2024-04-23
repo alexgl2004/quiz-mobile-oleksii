@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.sansSerif,
   },
   heading: {
-    fontSize: 42,
+    fontSize: 20,
     color: COLORS.accent,
     marginBottom: 12,
     fontFamily: FONTS.sansSerifBold,
