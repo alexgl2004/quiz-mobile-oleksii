@@ -3,12 +3,13 @@ import { Text, ScrollView, Button, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { globalStyles } from "../../../styles/global";
 import { Typography } from "../../../components/Typography";
+import { QuizGo } from "../../../components/QuizGo";
 import { UserContext } from "../../../context/UserContext";
 import { QuizContext } from "../../../context/QuizContext";
 
 export default function Room() {
 
-    const { nowQuizz, setNowQuizz, getUserQuizz } = useContext(QuizContext);
+    const { nowQuizz, getUserQuizz } = useContext(QuizContext);
     const { user } = useContext(UserContext);
     const [runningQuiz, setRunningQuiz] = useState(0)
 
@@ -20,7 +21,7 @@ export default function Room() {
       }
     },[nowQuizz]);
 
-    console.log('aaa',nowQuizz,'aaa')
+//    console.log('aaa',nowQuizz,'aaa')
 
     return (
       <>
@@ -41,7 +42,6 @@ export default function Room() {
                     }} 
                   />
                 </View>
-                <Text style={{color:'white'}}>{nowQuizz.resultsData.qr_link}</Text>
               </>
             }
           </ScrollView>)
