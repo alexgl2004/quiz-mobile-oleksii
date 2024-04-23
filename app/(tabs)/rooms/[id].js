@@ -16,10 +16,10 @@ export default function Room() {
     const { id } = useLocalSearchParams();
 
     useEffect(() => {
-      if(nowQuizz==null && user!=null){
+//      if(nowQuizz==null && user!=null){
         getUserQuizz(id)
-      }
-    },[nowQuizz]);
+//      }
+    },[id]);
 
 //    console.log('aaa',nowQuizz,'aaa')
 
@@ -27,7 +27,7 @@ export default function Room() {
       <>
         {nowQuizz!=null?(
           <ScrollView style={globalStyles.container}>
-            <Typography variant="heading">{nowQuizz.roomData.name}</Typography>
+            <Typography variant="heading">Room: {nowQuizz.roomData.name}</Typography>
             {runningQuiz==1?
               <QuizGo />:
               <>

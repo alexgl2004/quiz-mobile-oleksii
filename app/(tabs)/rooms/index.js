@@ -39,7 +39,7 @@ export default function Rooms() {
                       return (
                       <>
                         {elem.isRunning==1?
-                          <View style={{paddingHorizontal:15,paddingVertical:15,borderColor:COLORS.accent,borderWidth:2,marginBottom:5,borderRadius:10}}>
+                          <View key={elem.id} style={{paddingHorizontal:15,paddingVertical:15,borderColor:COLORS.accent,borderWidth:2,marginBottom:5,borderRadius:10}}>
                             <Pressable
                               onPress={() => {
                                 // Navigate after signing in. You may want to tweak this to ensure sign-in is

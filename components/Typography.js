@@ -30,4 +30,22 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontFamily: FONTS.sansSerifBold,
   },
+  headingQuiz: {
+    fontSize: 18,
+    color: 'yellow',
+    marginBottom: 12,
+    fontFamily: FONTS.sansSerifBold,
+  },
+  headingQuestion: {
+    fontSize: 20,
+    color: COLORS.accent,
+    marginBottom: 5,
+    fontFamily: FONTS.sansSerif,
+  },
+  paragraphQuestion: {
+    fontSize: 16,
+    color: COLORS.light,
+    marginBottom: 8,
+    fontFamily: FONTS.sansSerif,
+  },
 });
