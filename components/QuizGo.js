@@ -10,7 +10,8 @@ export function QuizGo() {
 
     const { nowQuizz, setNowQuizz } = useContext(QuizContext);
 
-    console.log(nowQuizz);
+    console.log(nowQuizz.quizzesData[0].questions);
+    console.log(nowQuizz.quizzesData[0].questions[0].answers);
 
     return (<>
             <Typography>
@@ -24,7 +25,7 @@ export function QuizGo() {
                 color={COLORS.accent}
               >
                 <Text style={globalStyles.button25}>Defer</Text>
-              </Pressable>              
+              </Pressable>
             </View>
           </>
  
