@@ -143,6 +143,9 @@ export function QuizGo() {
                   </Typography>
 
                   <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: '#333', marginBottom: 20 }}>
+
+                    {console.log(answersLine)}
+
                     {answersElem.map((elem,index)=>{
 
                       const answerOne = (answersLine?answersLine.filter((elemI)=>{
@@ -152,6 +155,7 @@ export function QuizGo() {
     
                       return (
                         <Pressable
+                          key={elem.id + '_' + questionElem.id + '_' + quizElem.id}
                           style={{
                               paddingHorizontal:15,
                               paddingVertical:5,
@@ -163,13 +167,13 @@ export function QuizGo() {
     //                        console.log(answersLine)
                             setAnswersLine((prev)=>{
 
-                              console.log(prev)                          
+//                              console.log(prev)
 
                               const indexNow = (prev?prev.findIndex((elemI)=>{
                                 return elemI.question_id == questionElem.id && elemI.quiz_id == quizElem.id
                               }):-1)
 
-                              console.log(indexNow)
+//                              console.log(indexNow)
 
                               if(indexNow==-1){
                                 if(!prev){
@@ -179,7 +183,9 @@ export function QuizGo() {
                                   {
                                     id:elem.id,
                                     question_id:questionElem.id,
-                                    quiz_id:quizElem.id
+                                    quiz_id:quizElem.id,
+                                    points:(elem.correct?questionElem.points:0),
+                                    correct:elem.correct
                                   }
                                 )
                               }else{
@@ -187,7 +193,9 @@ export function QuizGo() {
                                 {
                                   id:elem.id,
                                   question_id:questionElem.id,
-                                  quiz_id:quizElem.id
+                                  quiz_id:quizElem.id,
+                                  points:(elem.correct?questionElem.points:0),
+                                  correct:elem.correct
                                 }                            
                               }
 
@@ -207,7 +215,10 @@ export function QuizGo() {
                           }}
                           color={COLORS.accent}
                         >
-                          <Typography variant="paragraphQuestion">{elem.answer}</Typography>
+                          <Typography 
+                            variant="paragraphQuestion"
+                            style={{color:(answerOne && answerOne.id==elem.id?COLORS.dark:COLORS.light)}}
+                          >{elem.answer}</Typography>
                         </Pressable>   
                       )
                     })}
