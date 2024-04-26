@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import dayjs from 'dayjs';
+import { useContext, useState, useRef, useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
 import { globalStyles } from "../styles/global";
 import { router } from "expo-router";
@@ -6,14 +7,95 @@ import { Typography } from "./Typography";
 import { COLORS } from "../styles/constants";
 import { QuizContext } from "../context/QuizContext";
 
-export function QuizGo() {
+export function QuizGo(params) {
 
     const { nowQuizz, setNowQuizz } = useContext(QuizContext);
-    const [ showNext, setShowNext ] = useState(0); 
+    
+    const firstOpen = useRef(1);
+    const dateOpenQuestion = useRef({});
+    const nowDateTime = textDate(dayjs())
+
+    const [ showNext, setShowNext ] = useState(0);
     const [ showPrev, setShowPrev ] = useState(0);
     const [ showFinish, setShowFinish ] = useState(0);
-    const [ testFinished, setTestFinished ] = useState(0);
-    const [ answersLine, setAnswersLine ] = useState([]);
+
+    const [ testFinished, setTestFinished ] = useState(nowQuizz.resultsData.finished);
+    const [ answersLine, setAnswersLine ] = useState(nowQuizz.answerLine.map((elem)=>{
+        return {
+          id: elem.answer_id, 
+          question_id: elem.question_id, 
+          quiz_id: elem.quiz_id, 
+          points: elem.points, 
+          date_start:elem.date_start,
+          date_end:elem.date_end,
+          correct: elem.correct
+        }
+      }) 
+    );
+    
+//    console.log('aaaaaaaaaaaaa',answersLine)
+//    const [ statusSaved, setStatusSaved ] = useState(false);
+
+    function addZerro(elem,type=''){
+      elem = (['m','d'].includes(type) ? elem + 1 : elem)
+      return (elem+'').padStart(2,'0')
+    }
+
+    function textDate(elem){
+//      console.log('textDate',elem)
+      return elem.$y+'-' + addZerro(elem.$M,'m')+'-'+addZerro(elem.$D,'d') + ' '+addZerro(elem.$H) + ':'+addZerro(elem.$m) + ':'+addZerro(elem.$s)
+    }
+
+//  
+
+    const saveGoData = (goUserData,finished=0)=>{
+
+//      console.log('saveGoData',goUserData)
+
+      goUserData[goUserData.length-1] = {
+        ...goUserData[goUserData.length-1],
+        date_start: dateOpenQuestion.current.startTime,
+        date_end: nowDateTime+''
+      }
+
+      dateOpenQuestion.current = {
+        ...dateOpenQuestion.current,
+        startTime: nowDateTime+'',
+      }      
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          goUserData: goUserData,
+          finished: finished,
+          maxPoints: nowQuizz.roomData.maxPoints,
+          beginTest:dateOpenQuestion.current.beginTest,
+          endTest: (finished?nowDateTime+'':''),
+        })
+      };
+
+      const response = fetch('http://192.168.2.134:3000/users/results/'+nowQuizz.resultsData.id+'/save', options)
+      .then(response => {
+//        console.log(response)
+        return response.json()
+      })
+      .then((data) => { 
+          if(!data.status){
+            alert('Data not saved! Try again')
+          }
+      })
+      .catch(error => {
+        console.error(error)
+        alert('Data not saved! Try again')
+      });
+
+
+    }
+
 /*
     if(nowQuizz.questionsData.length==answersLine.length){
       setShowNext(0)
@@ -31,7 +113,7 @@ export function QuizGo() {
       let nowQuestionIndex = nowQuizz.questionsData.findIndex((elem, idx)=>{
         return elem.quiz_id == quiz_id && elem.id == question_id
       })
-
+/*
       console.log(
         '------------',
 //        nowQuizz.questionsData.length,
@@ -40,7 +122,7 @@ export function QuizGo() {
         nowQuizz.resultsData.last_quiz,
         nowQuizz.resultsData.last_question
       )
-
+*/
 //      nowQuestionIndex = -1
 
       if(nextA){
@@ -83,6 +165,22 @@ export function QuizGo() {
 
     }
 
+//    useEffect(() => {
+      if(nowQuizz.resultsData.last_quiz!=0 && firstOpen.current == 1){
+        goToNextPrevious(nowQuizz.resultsData.last_quiz,nowQuizz.resultsData.last_question,true)
+//        firstOpen.current = 0
+      }else if(firstOpen.current == 1){
+        dateOpenQuestion.current = {
+          ...dateOpenQuestion.current,
+          beginTest:nowDateTime+'',
+          startTime:nowDateTime+'',
+        }
+      }
+
+      firstOpen.current = 0
+
+
+////body---------------------------------------------------------------------------    
 //    console.log(nowQuizz.quizData);
 
     const quizElem = (nowQuizz.resultsData.last_quiz?
@@ -92,7 +190,7 @@ export function QuizGo() {
       nowQuizz.quizData[0]
     )
 
-//    console.log(quizElem)
+//    console.log('quizElem--',quizElem)
 
     const questionElem = nowQuizz.questionsData.filter((elem)=>{
       if(nowQuizz.resultsData.last_question==0){
@@ -100,12 +198,20 @@ export function QuizGo() {
           elem.quiz_id==quizElem.id
         )
       }else{
+
+//        console.log(elem.id+'=='+nowQuizz.resultsData.last_question+'&&'+
+//          elem.quiz_id+'=='+quizElem.id)
+
         return (
           elem.id==nowQuizz.resultsData.last_question &&
           elem.quiz_id==quizElem.id
         )
       }
     })[0]
+
+//    console.log('questionElem--',questionElem)
+
+//    console.log(nowQuizz)
 
 /*
     console.log(nowQuizz.resultsData.last_question)
@@ -115,6 +221,7 @@ export function QuizGo() {
     const answersElem = nowQuizz.answersData.filter((elem)=>{
       return elem.question_id==questionElem.id
     })
+
 /*
     console.log('-----------------------------------------------------------')
     console.log(quizElem)
@@ -123,163 +230,171 @@ export function QuizGo() {
     console.log(answersLine)
 */
     return (<>
-            
-            <Typography variant="headingQuiz">
-              {quizElem.name}
+      
+      <Typography variant="headingQuiz">
+        {quizElem.name}
+      </Typography>
+
+      <Typography variant="paragraph">
+        {quizElem.description}
+      </Typography>
+
+      <View style={{ padding: 10, borderWidth: 1, borderRadius: 5, borderColor: COLORS.accent, marginBottom: 20 }}>
+        {testFinished!=1?
+          <>
+            <Typography variant="headingQuestion">
+              {questionElem.header}
+            </Typography>
+            <Typography variant="paragraphQuestion">
+              {questionElem.text}
             </Typography>
 
-            <Typography variant="paragraph">
-              {quizElem.description}
-            </Typography>
+            <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: '#333', marginBottom: 20 }}>
 
-            <View style={{ padding: 10, borderWidth: 1, borderRadius: 5, borderColor: COLORS.accent, marginBottom: 20 }}>
-              {testFinished!=1?
-                <>
-                  <Typography variant="headingQuestion">
-                    {questionElem.header}
-                  </Typography>
-                  <Typography variant="paragraphQuestion">
-                    {questionElem.text}
-                  </Typography>
+              {console.log(answersLine)}
 
-                  <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: '#333', marginBottom: 20 }}>
+              {answersElem.map((elem,index)=>{
 
-                    {console.log(answersLine)}
+                const answerOne = (answersLine?answersLine.filter((elemI)=>{
+//                    console.log(elemI.id,'--',elem.id)
+                  return elemI.id==elem.id
+                })[0]:null)
 
-                    {answersElem.map((elem,index)=>{
-
-                      const answerOne = (answersLine?answersLine.filter((elemI)=>{
-    //                    console.log(elemI.id,'--',elem.id)
-                        return elemI.id==elem.id
-                      })[0]:null)
-    
-                      return (
-                        <Pressable
-                          key={elem.id + '_' + questionElem.id + '_' + quizElem.id}
-                          style={{
-                              paddingHorizontal:15,
-                              paddingVertical:5,
-                              marginBottom:5,
-                              backgroundColor:(answerOne && answerOne.id==elem.id?COLORS.primary:COLORS.dark),
-                              borderRadius:7
-                          }}
-                          onPress={() => {
-    //                        console.log(answersLine)
-                            setAnswersLine((prev)=>{
+                return (
+                  <Pressable
+                    key={elem.id + '_' + questionElem.id + '_' + quizElem.id}
+                    style={{
+                        paddingHorizontal:15,
+                        paddingVertical:5,
+                        marginBottom:5,
+                        backgroundColor:(answerOne && answerOne.id==elem.id?COLORS.primary:COLORS.dark),
+                        borderRadius:7
+                    }}
+                    onPress={() => {
+//                        console.log(answersLine)
+                      setAnswersLine((prev)=>{
 
 //                              console.log(prev)
 
-                              const indexNow = (prev?prev.findIndex((elemI)=>{
-                                return elemI.question_id == questionElem.id && elemI.quiz_id == quizElem.id
-                              }):-1)
+                        const indexNow = (prev?prev.findIndex((elemI)=>{
+                          return elemI.question_id == questionElem.id && elemI.quiz_id == quizElem.id
+                        }):-1)
 
 //                              console.log(indexNow)
 
-                              if(indexNow==-1){
-                                if(!prev){
-                                  prev = []
-                                }
-                                prev.push(
-                                  {
-                                    id:elem.id,
-                                    question_id:questionElem.id,
-                                    quiz_id:quizElem.id,
-                                    points:(elem.correct?questionElem.points:0),
-                                    correct:elem.correct
-                                  }
-                                )
-                              }else{
-                                prev[indexNow] = 
-                                {
-                                  id:elem.id,
-                                  question_id:questionElem.id,
-                                  quiz_id:quizElem.id,
-                                  points:(elem.correct?questionElem.points:0),
-                                  correct:elem.correct
-                                }                            
-                              }
+                        if(indexNow==-1){
+                          if(!prev){
+                            prev = []
+                          }
+                          prev.push(
+                            {
+                              id:elem.id,
+                              question_id:questionElem.id,
+                              quiz_id:quizElem.id,
+                              points:(elem.correct?questionElem.points:0),
+                              correct:elem.correct
+                            }
+                          )
+                        }else{
+                          prev[indexNow] = 
+                          {
+                            id:elem.id,
+                            question_id:questionElem.id,
+                            quiz_id:quizElem.id,
+                            points:(elem.correct?questionElem.points:0),
+                            correct:elem.correct
+                          }                            
+                        }
 
-                              if(nowQuizz.questionsData.length==answersLine.length){
-                                setShowNext(0)
-                                setShowFinish(1)
-                              }else{
-                                setShowNext(1)
-                                setShowFinish(0)
-                              }
+                        if(nowQuizz.questionsData.length==answersLine.length){
+                          setShowNext(0)
+                          setShowFinish(1)
+                        }else{
+                          setShowNext(1)
+                          setShowFinish(0)
+                        }
 
-                              return [...prev]
-                              
-                            })
+                        return [...prev]
+                        
+                      })
 
-
-                          }}
-                          color={COLORS.accent}
-                        >
-                          <Typography 
-                            variant="paragraphQuestion"
-                            style={{color:(answerOne && answerOne.id==elem.id?COLORS.dark:COLORS.light)}}
-                          >{elem.answer}</Typography>
-                        </Pressable>   
-                      )
-                    })}
-                  </View>
-                </>
-                :
-                <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: 'yellow', marginBottom: 20 }}>
-                  <Typography variant="paragraphQuestion" style={{color:'red'}}>
-                    The test is finished!
-                  </Typography>
-                </View>
-              }
-            </View>
-
-
-            <View style={{ paddingRight: 12, flex: 2, width: '100%', flexDirection: 'row' }}>
-              {showPrev==1?
-                <Pressable
-                  style={{marginRight:10}}
-                  onPress={() => {
-                    goToNextPrevious(quizElem.id,questionElem.id,false)
-                  }}
-                  color={COLORS.accent}
-                >
-                  <Text style={globalStyles.button25}>Back</Text>
-                </Pressable>
-                :''
-              }
-              {showNext==1?
-                <Pressable 
-                  onPress={() => {
-                    goToNextPrevious(quizElem.id,questionElem.id,true)
-                  }}
-                  color={COLORS.accent}
-                >
-                  <Text style={globalStyles.button25}>Next</Text>
-                </Pressable>
-                :''
-              }
-              {showFinish==1 && testFinished!=1?
-                <Pressable 
-                  onPress={() => {
-                    setTestFinished(1)
-                  }}
-                  color={COLORS.accent}
-                >
-                  <Text style={globalStyles.button25}>Finish</Text>
-                </Pressable>
-                :''
-              }
-              <Pressable 
-                  style={{ position:'absolute', right: 0 }}
-                  onPress={() => {
-                    router.replace("/rooms/"+nowQuizz.resultsData.id);
-                  }}
-                  color={COLORS.accent}
-                >
-                  <Text style={globalStyles.button25}>Defer</Text>
-              </Pressable>
+                    }}
+                    color={COLORS.accent}
+                  >
+                    <Typography 
+                      variant="paragraphQuestion"
+                      style={{color:(answerOne && answerOne.id==elem.id?COLORS.dark:COLORS.light)}}
+                    >{elem.answer}</Typography>
+                  </Pressable>   
+                )
+              })}
             </View>
           </>
- 
+          :
+          <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: 'yellow', marginBottom: 20 }}>
+            <Typography variant="paragraphQuestion" style={{color:'red'}}>
+              The test is finished!
+            </Typography>
+            {nowQuizz.resultsData.show_results==1?
+              <>
+                <Typography variant="paragraphQuestion" style={{color:'yellow',fontSize:20}}>Your Result: {nowQuizz.resultsData.result} / {nowQuizz.resultsData.max_points}</Typography>
+              </>
+            :''}
+          </View>
+        }
+      </View>
+
+
+      <View style={{ paddingRight: 12, flex: 2, width: '100%', flexDirection: 'row' }}>
+        {showPrev==1?
+          <Pressable
+            style={{marginRight:10}}
+            onPress={() => {
+              saveGoData(answersLine);
+              goToNextPrevious(quizElem.id,questionElem.id,false);
+            }}
+            color={COLORS.accent}
+          >
+            <Text style={globalStyles.button25}>Back</Text>
+          </Pressable>
+          :''
+        }
+        {showNext==1?
+          <Pressable 
+            onPress={() => {
+
+              saveGoData(answersLine);
+              goToNextPrevious(quizElem.id,questionElem.id,true);
+            }}
+            color={COLORS.accent}
+          >
+            <Text style={globalStyles.button25}>Next</Text>
+          </Pressable>
+          :''
+        }
+        {showFinish==1 && testFinished!=1?
+          <Pressable 
+            onPress={() => {
+              saveGoData(answersLine,1);
+              setTestFinished(1)
+            }}
+            color={COLORS.accent}
+          >
+            <Text style={globalStyles.button25}>Finish</Text>
+          </Pressable>
+          :''
+        }
+        <Pressable 
+            style={{ position:'absolute', right: 0 }}
+            onPress={() => {
+              router.replace("/rooms/"+nowQuizz.resultsData.id);
+            }}
+            color={COLORS.accent}
+          >
+            <Text style={globalStyles.button25}>Defer</Text>
+        </Pressable>
+      </View>
+    </>
+
     )
 }

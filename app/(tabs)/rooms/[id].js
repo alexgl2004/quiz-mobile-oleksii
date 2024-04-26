@@ -28,7 +28,7 @@ export default function Room() {
         {nowQuizz!=null?(
           <ScrollView style={globalStyles.container}>
             <Typography variant="heading">Room: {nowQuizz.roomData.name}</Typography>
-            {runningQuiz==1?
+            {runningQuiz==1 && id?
               <QuizGo />:
               <>
                 <Text style={globalStyles.p}>

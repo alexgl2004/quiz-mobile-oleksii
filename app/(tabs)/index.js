@@ -97,7 +97,7 @@ export default function HomePage() {
 
   }else{
 
-    console.log("user------------", room);
+//    console.log("user------------", room);
 
     return (
       <View style={globalStyles.container}>
@@ -113,6 +113,9 @@ export default function HomePage() {
           </View>
         </CameraView>
         </View>
+        <Pressable onPress={()=>setRoom(null)} style={globalStyles.buttonScan}>
+          <Text style={globalStyles.buttonText}>Cancel</Text>
+        </Pressable>        
       </View>
     );
   }
