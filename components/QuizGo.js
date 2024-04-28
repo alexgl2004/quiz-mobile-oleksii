@@ -166,19 +166,18 @@ export function QuizGo(params) {
     }
 
 //    useEffect(() => {
-      if(nowQuizz.resultsData.last_quiz!=0 && firstOpen.current == 1){
-        goToNextPrevious(nowQuizz.resultsData.last_quiz,nowQuizz.resultsData.last_question,true)
+    if(nowQuizz.resultsData.last_quiz!=0 && firstOpen.current == 1){
+      goToNextPrevious(nowQuizz.resultsData.last_quiz,nowQuizz.resultsData.last_question,true)
 //        firstOpen.current = 0
-      }else if(firstOpen.current == 1){
-        dateOpenQuestion.current = {
-          ...dateOpenQuestion.current,
-          beginTest:nowDateTime+'',
-          startTime:nowDateTime+'',
-        }
+    }else if(firstOpen.current == 1){
+      dateOpenQuestion.current = {
+        ...dateOpenQuestion.current,
+        beginTest:nowDateTime+'',
+        startTime:nowDateTime+'',
       }
+    }
 
-      firstOpen.current = 0
-
+    firstOpen.current = 0
 
 ////body---------------------------------------------------------------------------    
 //    console.log(nowQuizz.quizData);
@@ -272,51 +271,47 @@ export function QuizGo(params) {
                     }}
                     onPress={() => {
 //                        console.log(answersLine)
-                      setAnswersLine((prev)=>{
+                      let makeAnswerLine = [...answersLine]
 
-//                              console.log(prev)
-
-                        const indexNow = (prev?prev.findIndex((elemI)=>{
-                          return elemI.question_id == questionElem.id && elemI.quiz_id == quizElem.id
-                        }):-1)
+                      const indexNow = (makeAnswerLine?makeAnswerLine.findIndex((elemI)=>{
+                        return elemI.question_id == questionElem.id && elemI.quiz_id == quizElem.id
+                      }):-1)
 
 //                              console.log(indexNow)
 
-                        if(indexNow==-1){
-                          if(!prev){
-                            prev = []
-                          }
-                          prev.push(
-                            {
-                              id:elem.id,
-                              question_id:questionElem.id,
-                              quiz_id:quizElem.id,
-                              points:(elem.correct?questionElem.points:0),
-                              correct:elem.correct
-                            }
-                          )
-                        }else{
-                          prev[indexNow] = 
+                      if(indexNow==-1){
+                        if(!makeAnswerLine){
+                          makeAnswerLine = []
+                        }
+                        makeAnswerLine.push(
                           {
                             id:elem.id,
                             question_id:questionElem.id,
                             quiz_id:quizElem.id,
                             points:(elem.correct?questionElem.points:0),
                             correct:elem.correct
-                          }                            
-                        }
+                          }
+                        )
+                      }else{
+                        makeAnswerLine[indexNow] = 
+                        {
+                          id:elem.id,
+                          question_id:questionElem.id,
+                          quiz_id:quizElem.id,
+                          points:(elem.correct?questionElem.points:0),
+                          correct:elem.correct
+                        }                            
+                      }
 
-                        if(nowQuizz.questionsData.length==answersLine.length){
-                          setShowNext(0)
-                          setShowFinish(1)
-                        }else{
-                          setShowNext(1)
-                          setShowFinish(0)
-                        }
+                      setAnswersLine([...makeAnswerLine])
 
-                        return [...prev]
-                        
-                      })
+                      if(nowQuizz.questionsData.length==makeAnswerLine.length){
+                        setShowNext(0)
+                        setShowFinish(1)
+                      }else{
+                        setShowNext(1)
+                        setShowFinish(0)
+                      }
 
                     }}
                     color={COLORS.accent}
@@ -348,7 +343,8 @@ export function QuizGo(params) {
       <View style={{ paddingRight: 12, flex: 2, width: '100%', flexDirection: 'row' }}>
         {showPrev==1?
           <Pressable
-            style={{marginRight:10}}
+            style={{ position:'absolute', right: 0 }}
+            
             onPress={() => {
               saveGoData(answersLine);
               goToNextPrevious(quizElem.id,questionElem.id,false);
@@ -361,6 +357,7 @@ export function QuizGo(params) {
         }
         {showNext==1?
           <Pressable 
+            style={{ position:'absolute', right: 0 }}
             onPress={() => {
 
               saveGoData(answersLine);
@@ -374,6 +371,7 @@ export function QuizGo(params) {
         }
         {showFinish==1 && testFinished!=1?
           <Pressable 
+            style={{ position:'absolute', right: 0 }}
             onPress={() => {
               saveGoData(answersLine,1);
               setTestFinished(1)
@@ -384,15 +382,6 @@ export function QuizGo(params) {
           </Pressable>
           :''
         }
-        <Pressable 
-            style={{ position:'absolute', right: 0 }}
-            onPress={() => {
-              router.replace("/rooms/"+nowQuizz.resultsData.id);
-            }}
-            color={COLORS.accent}
-          >
-            <Text style={globalStyles.button25}>Defer</Text>
-        </Pressable>
       </View>
     </>
 

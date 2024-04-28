@@ -113,7 +113,7 @@ export default function HomePage() {
           </View>
         </CameraView>
         </View>
-        <Pressable onPress={()=>setRoom(null)} style={globalStyles.buttonScan}>
+        <Pressable onPress={()=>setRoom('none')} style={globalStyles.buttonScan}>
           <Text style={globalStyles.buttonText}>Cancel</Text>
         </Pressable>        
       </View>
