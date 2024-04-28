@@ -6,7 +6,7 @@ export const UserContext = createContext();
 
 export function UserProvider({ children }) {
 
-  const serverLink = 'https://alexgl.de:3000'
+  const serverLink = 'http://alexgl.de:3000'
 
   // user: null if not logged in
   // { name: string, lastLogin: Date }

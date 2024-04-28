@@ -7,7 +7,7 @@ export const QuizContext = createContext();
 
 export function QuizProvider({ children }) {
 
-  const serverLink = 'https://alexgl.de:3000'
+  const serverLink = 'http://alexgl.de:3000'
 
   const { user } = useContext(UserContext);
   

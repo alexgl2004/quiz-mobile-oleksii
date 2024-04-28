@@ -9,7 +9,7 @@ import { QuizContext } from "../context/QuizContext";
 
 export function QuizGo(params) {
 
-    const serverLink = 'https://alexgl.de:3000'
+    const serverLink = 'http://alexgl.de:3000'
 
     const { nowQuizz, setNowQuizz } = useContext(QuizContext);
     
