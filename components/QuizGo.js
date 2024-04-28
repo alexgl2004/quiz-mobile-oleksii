@@ -9,6 +9,8 @@ import { QuizContext } from "../context/QuizContext";
 
 export function QuizGo(params) {
 
+    const serverLink = 'https://alexgl.de:3000'
+
     const { nowQuizz, setNowQuizz } = useContext(QuizContext);
     
     const firstOpen = useRef(1);
@@ -78,7 +80,7 @@ export function QuizGo(params) {
         })
       };
 
-      const response = fetch('http://192.168.2.134:3000/users/results/'+nowQuizz.resultsData.id+'/save', options)
+      const response = fetch('http://'+serverLink+':3000/users/results/'+nowQuizz.resultsData.id+'/save', options)
       .then(response => {
 //        console.log(response)
         return response.json()

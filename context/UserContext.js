@@ -5,7 +5,9 @@ import { router } from "expo-router";
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
-  
+
+  const serverLink = 'https://alexgl.de:3000'
+
   // user: null if not logged in
   // { name: string, lastLogin: Date }
   const [user, setUser] = useState(null);//useState({'email':'test','password':'12345','name':'test','userid':'123456785'});
@@ -101,7 +103,7 @@ export function UserProvider({ children }) {
       method: 'GET',
     };
 
-    const response2 = fetch('http://192.168.2.134:3000/users', options2)
+    const response2 = fetch('http://'+serverLink+':3000/users', options2)
     .then(response2 => response2.json())
     .then(data => { 
       console.log('test', data)
@@ -120,7 +122,7 @@ export function UserProvider({ children }) {
       })
     };
 
-    const response = fetch('http://192.168.2.134:3000/users/login', options)
+    const response = fetch('http://'+serverLink+':3000/users/login', options)
     .then(response => {
 //      console.log(response)
       return response.json()
@@ -163,7 +165,7 @@ export function UserProvider({ children }) {
           })
         };
     
-        const response = fetch('http://192.168.2.134:3000/users/login/qr', options)
+        const response = fetch('http://'+serverLink+':3000/users/login/qr', options)
         .then(response => {
     //      console.log(response)
           return response.json()

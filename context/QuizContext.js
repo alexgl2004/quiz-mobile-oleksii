@@ -7,6 +7,8 @@ export const QuizContext = createContext();
 
 export function QuizProvider({ children }) {
 
+  const serverLink = 'https://alexgl.de:3000'
+
   const { user } = useContext(UserContext);
   
   // user: null if not logged in
@@ -30,7 +32,7 @@ export function QuizProvider({ children }) {
 
     console.log(user.userid)
 
-    const response = fetch('http://192.168.2.134:3000/users/results/student', options)
+    const response = fetch('http://'+serverLink+':3000/users/results/student', options)
     .then(response => {
 //      console.log(response)
       return response.json()
@@ -69,7 +71,7 @@ export function QuizProvider({ children }) {
 
     console.log(user.userid)
 
-    const response = fetch('http://192.168.2.134:3000/users/results/'+id, options)
+    const response = fetch('http://'+serverLink+':3000/users/results/'+id, options)
     .then(response => {
 //      console.log(response)
       return response.json()
