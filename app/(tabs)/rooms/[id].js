@@ -9,7 +9,7 @@ import { QuizContext } from "../../../context/QuizContext";
 
 export default function Room() {
 
-    const { nowQuizz, getUserQuizz } = useContext(QuizContext);
+    const { nowQuizz, setNowQuizz, getUserQuizz } = useContext(QuizContext);
     const { user } = useContext(UserContext);
     const [runningQuiz, setRunningQuiz] = useState(0)
 
@@ -29,7 +29,7 @@ export default function Room() {
           <ScrollView style={globalStyles.container}>
             <Typography variant="heading">Room: {nowQuizz.roomData.name}</Typography>
             {runningQuiz==1 && id?
-              <QuizGo />:
+              <QuizGo roomId={id} getUserQuizz={getUserQuizz} nowQuizz={nowQuizz} setNowQuizz={setNowQuizz} />:
               <>
                 <Text style={globalStyles.p}>
                   {nowQuizz.roomData.description}

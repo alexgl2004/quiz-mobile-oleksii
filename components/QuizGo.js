@@ -5,14 +5,12 @@ import { globalStyles } from "../styles/global";
 import { router } from "expo-router";
 import { Typography } from "./Typography";
 import { COLORS } from "../styles/constants";
-import { QuizContext } from "../context/QuizContext";
+//import { QuizContext } from "../context/QuizContext";
 import { path_server } from '../path';
 
 export function QuizGo(params) {
 
-    const serverLink = 'alexgl.de'
-
-    const { nowQuizz, setNowQuizz } = useContext(QuizContext);
+//    const { nowQuizz, setNowQuizz, getUserQuizz } = useContext(QuizContext);
     
     const firstOpen = useRef(1);
     const dateOpenQuestion = useRef({});
@@ -22,8 +20,8 @@ export function QuizGo(params) {
     const [ showPrev, setShowPrev ] = useState(0);
     const [ showFinish, setShowFinish ] = useState(0);
 
-    const [ testFinished, setTestFinished ] = useState(nowQuizz.resultsData.finished);
-    const [ answersLine, setAnswersLine ] = useState(nowQuizz.answerLine.map((elem)=>{
+    const [ testFinished, setTestFinished ] = useState(params.nowQuizz.resultsData.finished);
+    const [ answersLine, setAnswersLine ] = useState(params.nowQuizz.answerLine.map((elem)=>{
         return {
           id: elem.answer_id, 
           question_id: elem.question_id, 
@@ -75,13 +73,13 @@ export function QuizGo(params) {
         body: JSON.stringify({
           goUserData: goUserData,
           finished: finished,
-          maxPoints: nowQuizz.roomData.maxPoints,
+          maxPoints: params.nowQuizz.roomData.maxPoints,
           beginTest:dateOpenQuestion.current.beginTest,
           endTest: (finished?nowDateTime+'':''),
         })
       };
 
-      const response = fetch(path_server+'/users/results/'+nowQuizz.resultsData.id+'/save', options)
+      const response = fetch(path_server+'/users/results/'+params.nowQuizz.resultsData.id+'/save', options)
       .then(response => {
 //        console.log(response)
         return response.json()
@@ -113,7 +111,7 @@ export function QuizGo(params) {
 
     function goToNextPrevious(quiz_id,question_id,nextA=true){
 
-      let nowQuestionIndex = nowQuizz.questionsData.findIndex((elem, idx)=>{
+      let nowQuestionIndex = params.nowQuizz.questionsData.findIndex((elem, idx)=>{
         return elem.quiz_id == quiz_id && elem.id == question_id
       })
 /*
@@ -130,7 +128,7 @@ export function QuizGo(params) {
 
       if(nextA){
         setShowNext(0)
-        if(nowQuestionIndex < nowQuizz.questionsData.length-1){
+        if(nowQuestionIndex < params.nowQuizz.questionsData.length-1){
           nowQuestionIndex = nowQuestionIndex + 1
           if(showNext==0){
 //            setShowNext(1)
@@ -157,11 +155,11 @@ export function QuizGo(params) {
         }
       }
 
-      setNowQuizz(
-        {...nowQuizz,
-          resultsData: {...nowQuizz.resultsData,
-                          last_quiz:nowQuizz.questionsData[nowQuestionIndex].quiz_id,
-                          last_question:nowQuizz.questionsData[nowQuestionIndex].id
+      params.setNowQuizz(
+        {...params.nowQuizz,
+          resultsData: {...params.nowQuizz.resultsData,
+                          last_quiz:params.nowQuizz.questionsData[nowQuestionIndex].quiz_id,
+                          last_question:params.nowQuizz.questionsData[nowQuestionIndex].id
           }
         }
       )
@@ -169,8 +167,8 @@ export function QuizGo(params) {
     }
 
 //    useEffect(() => {
-    if(nowQuizz.resultsData.last_quiz!=0 && firstOpen.current == 1){
-      goToNextPrevious(nowQuizz.resultsData.last_quiz,nowQuizz.resultsData.last_question,true)
+    if(params.nowQuizz.resultsData.last_quiz!=0 && firstOpen.current == 1){
+      goToNextPrevious(params.nowQuizz.resultsData.last_quiz,params.nowQuizz.resultsData.last_question,true)
 //        firstOpen.current = 0
     }else if(firstOpen.current == 1){
       dateOpenQuestion.current = {
@@ -183,29 +181,29 @@ export function QuizGo(params) {
     firstOpen.current = 0
 
 ////body---------------------------------------------------------------------------    
-//    console.log(nowQuizz.quizData);
+//    console.log(params.nowQuizz.quizData);
 
-    const quizElem = (nowQuizz.resultsData.last_quiz?
-      nowQuizz.quizData.filter((elem)=>{
-        return elem.id==nowQuizz.resultsData.last_quiz
+    const quizElem = (params.nowQuizz.resultsData.last_quiz?
+      params.nowQuizz.quizData.filter((elem)=>{
+        return elem.id==params.nowQuizz.resultsData.last_quiz
       })[0]:
-      nowQuizz.quizData[0]
+      params.nowQuizz.quizData[0]
     )
 
 //    console.log('quizElem--',quizElem)
 
-    const questionElem = nowQuizz.questionsData.filter((elem)=>{
-      if(nowQuizz.resultsData.last_question==0){
+    const questionElem = params.nowQuizz.questionsData.filter((elem)=>{
+      if(params.nowQuizz.resultsData.last_question==0){
         return (
           elem.quiz_id==quizElem.id
         )
       }else{
 
-//        console.log(elem.id+'=='+nowQuizz.resultsData.last_question+'&&'+
+//        console.log(elem.id+'=='+params.nowQuizz.resultsData.last_question+'&&'+
 //          elem.quiz_id+'=='+quizElem.id)
 
         return (
-          elem.id==nowQuizz.resultsData.last_question &&
+          elem.id==params.nowQuizz.resultsData.last_question &&
           elem.quiz_id==quizElem.id
         )
       }
@@ -213,14 +211,14 @@ export function QuizGo(params) {
 
 //    console.log('questionElem--',questionElem)
 
-//    console.log(nowQuizz)
+//    console.log(params.nowQuizz)
 
 /*
-    console.log(nowQuizz.resultsData.last_question)
-    console.log(nowQuizz.questionsData)
+    console.log(params.nowQuizz.resultsData.last_question)
+    console.log(params.nowQuizz.questionsData)
     console.log(questionElem)
 */
-    const answersElem = nowQuizz.answersData.filter((elem)=>{
+    const answersElem = params.nowQuizz.answersData.filter((elem)=>{
       return elem.question_id==questionElem.id
     })
 
@@ -307,8 +305,9 @@ export function QuizGo(params) {
                       }
 
                       setAnswersLine([...makeAnswerLine])
+                      console.log(params.nowQuizz.questionsData.length+'=='+makeAnswerLine.length)
 
-                      if(nowQuizz.questionsData.length==makeAnswerLine.length){
+                      if(params.nowQuizz.questionsData.length==makeAnswerLine.length){
                         setShowNext(0)
                         setShowFinish(1)
                       }else{
@@ -333,9 +332,9 @@ export function QuizGo(params) {
             <Typography variant="paragraphQuestion" style={{color:'red'}}>
               The test is finished!
             </Typography>
-            {nowQuizz.resultsData.show_results==1?
+            {params.nowQuizz.resultsData.show_results==1?
               <>
-                <Typography variant="paragraphQuestion" style={{color:'yellow',fontSize:20}}>Your Result: {nowQuizz.resultsData.result} / {nowQuizz.resultsData.max_points}</Typography>
+                <Typography variant="paragraphQuestion" style={{color:'yellow',fontSize:20}}>Your Result: {params.nowQuizz.resultsData.result} / {params.nowQuizz.resultsData.max_points}</Typography>
               </>
             :''}
           </View>
@@ -343,7 +342,7 @@ export function QuizGo(params) {
       </View>
 
 
-      <View style={{ paddingRight: 12, flex: 2, width: '100%', flexDirection: 'row' }}>
+      <View style={{ paddingRight: 12, flex: 2, width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
         {showPrev==1?
           <Pressable
             style={{ position:'absolute', right: 0 }}
@@ -360,7 +359,6 @@ export function QuizGo(params) {
         }
         {showNext==1?
           <Pressable 
-            style={{ position:'absolute', right: 0 }}
             onPress={() => {
 
               saveGoData(answersLine);
@@ -374,9 +372,9 @@ export function QuizGo(params) {
         }
         {showFinish==1 && testFinished!=1?
           <Pressable 
-            style={{ position:'absolute', right: 0 }}
             onPress={() => {
               saveGoData(answersLine,1);
+              params.getUserQuizz(params.roomId)
               setTestFinished(1)
             }}
             color={COLORS.accent}

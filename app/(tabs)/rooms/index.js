@@ -37,9 +37,9 @@ export default function Rooms() {
                 <View>
                   {quizzes!=null?quizzes.map((elem)=>{
                       return (
-                      <>
+                      <View key={elem.id}>
                         {elem.isRunning==1?
-                          <View key={elem.id} style={{paddingHorizontal:15,paddingVertical:15,borderColor:COLORS.accent,borderWidth:2,marginBottom:5,borderRadius:10}}>
+                          <View style={{paddingHorizontal:15,paddingVertical:15,borderColor:COLORS.accent,borderWidth:2,marginBottom:5,borderRadius:10}}>
                             <Pressable
                               onPress={() => {
                                 // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -55,7 +55,7 @@ export default function Rooms() {
                             </Pressable>                  
                           </View>
                         :''}
-                      </>)
+                      </View>)
                   })
                   :''}
                 </View>

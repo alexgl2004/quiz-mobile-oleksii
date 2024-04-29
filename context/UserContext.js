@@ -7,95 +7,12 @@ export const UserContext = createContext();
 
 export function UserProvider({ children }) {
 
-  const serverLink = 'alexgl.de'
-
   // user: null if not logged in
   // { name: string, lastLogin: Date }
   const [user, setUser] = useState(null);//useState({'email':'test','password':'12345','name':'test','userid':'123456785'});
   const responseData = useRef(null)
 
-  function setUserRoom(room) { //this function mut be deleted
-
-    const options = {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({'actionId':room})
-    }; 
-
-    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/activateroomtion', options)
-    .then(response => response.json())
-    .then(data => { 
-      console.log('test-AKT-------------------------'+"\n", user, room, data)
-
-      setUser(
-        {
-          name: user.name,
-          email: user.email,
-          userid: user.userid,
-          roomtionCode: room,
-          roomactive: data.roomtion,
-        }
-      );      
-      
-      
-//     console.log(data.name,name,'&&',data.password,password)
-/*
-      if( data.name && (data.name.toUpperCase()==name.toUpperCase() || data.email.toUpperCase()==name) && data.password == password){
-        setUser(
-          {
-            name: data.name,
-            email: data.email,
-            userid: data.id,
-            roomtion: data.roomtion,
-          }
-        );
-
-        router.push('');
-
-      }else{
-        alert('Wrong Email or Password!')
-      }
-*/      
-    })
-    .catch(error => console.error(error));
-
-  }
-
-  function delUserRoom() { //this function mut be deleted
-
-    const options = {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({'actionId':"PROMO10"})
-    }; 
-
-    const response = fetch('https://prj-backend-shopping-basket.onrender.com/user/' + user.userid + '/deactivateroomtion', options)
-    .then(response => response.json())
-    .then(data => { 
-      console.log('test-DEL-------------------------'+"\n", user, response, data)
-
-      setUser(
-        {
-          name: user.name,
-          email: user.email,
-          userid: user.userid,
-          roomtionCode: '',
-          roomactive: false,
-        }
-      );            
-      
-    })
-    .catch(error => console.error(error));
-
-  }  
-
-  function login(name, password) {
+    function login(name, password) {
 
 //    let nemeEmailed= (name.indexOf('@')!=-1?name.toLowerCase():name.toLowerCase() + '@test.com')
 
@@ -130,7 +47,7 @@ export function UserProvider({ children }) {
     })
     .then(data => { 
       console.log('test', data, name, password)
-      if( data.userdata.password == password && data.userdata.login == name){
+      if( data.userdata && data.userdata.password == password && data.userdata.login == name){
         setUser(
           {
             name: data.userdata.name,
@@ -204,8 +121,6 @@ export function UserProvider({ children }) {
         user,
         login,
         logout,
-        setUserRoom,
-        delUserRoom,
         loginQR,
       }}
     >
