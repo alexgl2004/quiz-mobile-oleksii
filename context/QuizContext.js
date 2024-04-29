@@ -8,8 +8,6 @@ export const QuizContext = createContext();
 
 export function QuizProvider({ children }) {
 
-  const serverLink = 'alexgl.de'
-
   const { user } = useContext(UserContext);
   
   // user: null if not logged in
