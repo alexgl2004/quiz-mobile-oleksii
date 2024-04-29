@@ -2,12 +2,13 @@ import { createContext, useContext, useState, useRef } from "react";
 //import { users } from "../data/data";
 import { router } from "expo-router";
 import { UserContext } from "../context/UserContext";
+import { path_server } from "../path";
 
 export const QuizContext = createContext();
 
 export function QuizProvider({ children }) {
 
-  const serverLink = 'http://alexgl.de:3000'
+  const serverLink = 'alexgl.de'
 
   const { user } = useContext(UserContext);
   
@@ -32,7 +33,7 @@ export function QuizProvider({ children }) {
 
     console.log(user.userid)
 
-    const response = fetch('http://'+serverLink+':3000/users/results/student', options)
+    const response = fetch(path_server+'/users/results/student', options)
     .then(response => {
 //      console.log(response)
       return response.json()
@@ -71,7 +72,7 @@ export function QuizProvider({ children }) {
 
     console.log(user.userid)
 
-    const response = fetch('http://'+serverLink+':3000/users/results/'+id, options)
+    const response = fetch(path_server+'/users/results/'+id, options)
     .then(response => {
 //      console.log(response)
       return response.json()

@@ -6,10 +6,11 @@ import { router } from "expo-router";
 import { Typography } from "./Typography";
 import { COLORS } from "../styles/constants";
 import { QuizContext } from "../context/QuizContext";
+import { path_server } from '../path';
 
 export function QuizGo(params) {
 
-    const serverLink = 'http://alexgl.de:3000'
+    const serverLink = 'alexgl.de'
 
     const { nowQuizz, setNowQuizz } = useContext(QuizContext);
     
@@ -80,7 +81,7 @@ export function QuizGo(params) {
         })
       };
 
-      const response = fetch('http://'+serverLink+':3000/users/results/'+nowQuizz.resultsData.id+'/save', options)
+      const response = fetch(path_server+'/users/results/'+nowQuizz.resultsData.id+'/save', options)
       .then(response => {
 //        console.log(response)
         return response.json()

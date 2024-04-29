@@ -1,19 +1,20 @@
 import { createContext, useContext, useState, useRef } from "react";
 //import { users } from "../data/data";
 import { router } from "expo-router";
+import { path_server } from "../path";
 
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
 
-  const serverLink = 'http://alexgl.de:3000'
+  const serverLink = 'alexgl.de'
 
   // user: null if not logged in
   // { name: string, lastLogin: Date }
   const [user, setUser] = useState(null);//useState({'email':'test','password':'12345','name':'test','userid':'123456785'});
   const responseData = useRef(null)
 
-  function setUserRoom(room) {
+  function setUserRoom(room) { //this function mut be deleted
 
     const options = {
       method: 'POST',
@@ -63,7 +64,7 @@ export function UserProvider({ children }) {
 
   }
 
-  function delUserRoom() {
+  function delUserRoom() { //this function mut be deleted
 
     const options = {
       method: 'POST',
@@ -103,7 +104,7 @@ export function UserProvider({ children }) {
       method: 'GET',
     };
 
-    const response2 = fetch('http://'+serverLink+':3000/users', options2)
+    const response2 = fetch(path_server+'/users', options2)
     .then(response2 => response2.json())
     .then(data => { 
       console.log('test', data)
@@ -122,7 +123,7 @@ export function UserProvider({ children }) {
       })
     };
 
-    const response = fetch('http://'+serverLink+':3000/users/login', options)
+    const response = fetch(path_server+'/users/login', options)
     .then(response => {
 //      console.log(response)
       return response.json()
@@ -165,7 +166,7 @@ export function UserProvider({ children }) {
           })
         };
     
-        const response = fetch('http://'+serverLink+':3000/users/login/qr', options)
+        const response = fetch(path_server+'/users/login/qr', options)
         .then(response => {
     //      console.log(response)
           return response.json()
