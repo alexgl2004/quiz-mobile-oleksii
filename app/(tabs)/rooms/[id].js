@@ -10,7 +10,7 @@ import { QuizContext } from "../../../context/QuizContext";
 export default function Room() {
 
     const { nowQuizz, setNowQuizz, getUserQuizz } = useContext(QuizContext);
-    const { user } = useContext(UserContext);
+//    const { user } = useContext(UserContext);
     const [runningQuiz, setRunningQuiz] = useState(0)
 
     const { id } = useLocalSearchParams();

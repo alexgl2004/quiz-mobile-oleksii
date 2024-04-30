@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Text, ScrollView, View, Pressable } from "react-native";
 import { router } from "expo-router";
 import { globalStyles } from "../../../styles/global";
@@ -11,7 +11,7 @@ export default function Rooms() {
 
     const header_var = (<Typography variant="heading">All your available Quizzes</Typography>);
     const { quizzes, getAllUserQuizzes } = useContext(QuizContext);
-    const { user, login } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
       if(quizzes==null && user!=null){

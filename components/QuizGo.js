@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { useContext, useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { View, Pressable, Text } from "react-native";
 import { globalStyles } from "../styles/global";
-import { router } from "expo-router";
+//import { router } from "expo-router";
 import { Typography } from "./Typography";
 import { COLORS } from "../styles/constants";
 //import { QuizContext } from "../context/QuizContext";
@@ -329,7 +329,7 @@ export function QuizGo(params) {
           </>
           :
           <View style={{ padding: 15, backgroundColor:'#333', borderWidth: 1, borderRadius: 5, borderColor: 'yellow', marginBottom: 20 }}>
-            <Typography variant="paragraphQuestion" style={{color:'red'}}>
+            <Typography variant="paragraphQuestion" style={{color:'white'}}>
               The test is finished!
             </Typography>
             {params.nowQuizz.resultsData.show_results==1?

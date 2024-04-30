@@ -31,7 +31,7 @@ export default function Login() {
          (
           <>
             <Text style={globalStyles.pCenter}>
-              Are you shure to make logout?
+              Are you sure to make logout?
             </Text>
             <Button
               onPress={() => {

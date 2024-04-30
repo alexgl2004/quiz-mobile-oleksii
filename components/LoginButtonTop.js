@@ -1,9 +1,9 @@
-import { View, Button, Text } from "react-native";
+import { View, Button } from "react-native";
 import { router } from "expo-router";
 import { COLORS } from "../styles/constants";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { globalStyles } from "../styles/global";
+//import { globalStyles } from "../styles/global";
 
 
 export function LoginButtonTop() {

@@ -11,7 +11,7 @@ export default function HomePage() {
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [room, setRoom] = useState('none');
-  const [boolOutForRoom, setOutForRoom] = useState(false);
+//  const [boolOutForRoom, setOutForRoom] = useState(false);
 
   const { user, setUserRoom, delUserRoom, loginQR } = useContext(UserContext);
   const header_var = (<Typography variant="heading">Room code</Typography>);
@@ -19,13 +19,13 @@ export default function HomePage() {
   useEffect(() => {
     if(user!=null){
       if(user.roomactive==true){
-        setOutForRoom(true)
+//        setOutForRoom(true)
       }else{
-        setOutForRoom(false)
+//        setOutForRoom(false)
       }
       setRoom('none')
     }else{
-      setOutForRoom(false)
+//      setOutForRoom(false)
       setRoom('none')
     }
   },[user]);

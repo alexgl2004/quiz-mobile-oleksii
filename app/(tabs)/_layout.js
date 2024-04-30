@@ -1,12 +1,12 @@
-import { Tabs, router } from "expo-router";
+import { Tabs } from "expo-router";
 import { COLORS } from "../../styles/constants";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+//import { MaterialCommunityIcons } from "@expo/vector-icons";
+//import { Feather } from "@expo/vector-icons";
 import { LoginButtonTop } from "../../components/LoginButtonTop";
 import { QuizProvider } from "../../context/QuizContext";
 
-import { Button, View } from "react-native";
+//import { Button, View } from "react-native";
 
 export default function MainTabs() {
   return (
