@@ -1,5 +1,5 @@
 import { Text, StyleSheet } from "react-native";
-import { globalStyles } from "../styles/global";
+//import { globalStyles } from "../styles/global";
 import { COLORS } from "../styles/constants";
 import { FONTS } from "../styles/constants";
 
