@@ -24,7 +24,7 @@ export default function Rooms() {
       router.replace('/login')
     }else{
 
-      console.log(quizzes)
+//      console.log(quizzes)
 
       return (
         <>

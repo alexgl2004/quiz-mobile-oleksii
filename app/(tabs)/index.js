@@ -86,8 +86,9 @@ export default function HomePage() {
         <View style={globalStyles.container}>
           {header_var}
           <Text style={globalStyles.p}>Hello, {user.title} {user.name} {user.surname}.</Text>
-          <Text style={globalStyles.p}>You can use QR scan for jumping in another quiz</Text>
-          <Text style={globalStyles.p}>(Beetwen your accaunts too).</Text>
+          <Text style={globalStyles.p}>Login: {user.login}</Text>
+          <Text style={globalStyles.p}>You can use QR scan for jumping in another test</Text>
+          <Text style={globalStyles.p}>(Beetwen your accounts too).</Text>
 
           <Pressable onPress={()=>setRoom('')} style={globalStyles.buttonScan}>
               <Text style={globalStyles.buttonText}>Scan QR</Text>

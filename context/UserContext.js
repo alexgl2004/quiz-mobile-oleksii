@@ -54,6 +54,7 @@ export function UserProvider({ children }) {
             surname: data.userdata.surname,
             school: data.userdata.school,
             email: data.userdata.email,
+            login: data.userdata.login,
             userid: data.userdata.id,
             role: data.userdata.role
           }
@@ -70,46 +71,48 @@ export function UserProvider({ children }) {
 
   function loginQR(QRlink) {
 
-        logout()
-   
-        const options = {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            QR: QRlink,
-          })
-        };
-    
-        const response = fetch(path_server+'/users/login/qr', options)
-        .then(response => {
-    //      console.log(response)
-          return response.json()
-        })
-        .then(data => { 
-    //      console.log('test', data)
-          if( data.userdata.id ){
-            setUser(
-              {
-                name: data.userdata.name,
-                surname: data.userdata.surname,
-                school: data.userdata.school,
-                email: data.userdata.email,
-                userid: data.userdata.id,
-                role: data.userdata.role
-              }
-            );
-    
-            router.replace('/rooms/'+data.results_id);
-    
-          }else{
-            alert('Wrong Email or Password!')
+//        logout()
+//    setUser(null);
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        QR: QRlink,
+      })
+    };
+
+    const response = fetch(path_server+'/users/login/qr', options)
+    .then(response => {
+//      console.log(response)
+      return response.json()
+    })
+    .then(data => { 
+//      console.log('test', data)
+      if( data.userdata.id ){
+        setUser(
+          {
+            name: data.userdata.name,
+            surname: data.userdata.surname,
+            school: data.userdata.school,
+            email: data.userdata.email,
+            login: data.userdata.login,
+            userid: data.userdata.id,
+            role: data.userdata.role
           }
-        })
-        .catch(error => console.error(error));
-      }  
+        );
+
+        router.replace('/rooms/'+data.results_id);
+
+      }else{
+        alert('Wrong Email or Password!')
+      }
+    })
+    .catch(error => console.error(error));
+  }  
 
   function logout() {
     setUser(null);

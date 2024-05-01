@@ -46,16 +46,8 @@ export default function MainTabs() {
             title: "Rooms",
             headerShown: false,
             tabBarIcon: ({ color }) => {
-              return <Ionicons name="document-outline" size={24} color={color} />;
-            },
-          }}
-        />
-        <Tabs.Screen
-          name="info"
-          options={{
-            title: "Information",
-            tabBarIcon: ({ color }) => {
-              return <Ionicons name="document-outline" size={24} color={color} />;
+              return <Ionicons name="file-tray-full" size={24} color={color} />;
+              
             },
           }}
         />
