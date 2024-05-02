@@ -14,7 +14,7 @@ export default function HomePage() {
 //  const [boolOutForRoom, setOutForRoom] = useState(false);
 
   const { user, setUserRoom, delUserRoom, loginQR } = useContext(UserContext);
-  const header_var = (<Typography variant="heading">Room code</Typography>);
+  const header_var = (<Typography variant="heading">Students testing system</Typography>);
 
   useEffect(() => {
     if(user!=null){
